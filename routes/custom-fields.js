@@ -32,8 +32,9 @@ router.post('/custom', async (req, res) => {
 // 사용자 정의 필드 불러오기
 router.get('/custom', async (req, res) => {
 	const { store, category } = req.query
+    let fields
 	try {
-		const fields = await CustomField.find({ store, category })
+		fields = await CustomField.find({ store, category })
 	} catch (error) {
 		console.error(error)
 	}
