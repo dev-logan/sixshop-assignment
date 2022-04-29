@@ -6,13 +6,25 @@ const CustomField = require('../models/custom-field')
 router.post('/custom', async (req, res) => {
 	const { store, category, fieldName, dataType, numberUnit } = req.body
 
-    if (dataType === 'number') {
-        if (numberUnit === undefined) {
-            return res.status(400).json({
+	if (!['customer', 'product', 'order'].includes(category)) {
+		return res.status(400).json({
+			msg: '올바른 카테고리를 입력해주세요.',
+		})
+	}
+
+	if (!['Date', 'string', 'Array', 'number'].includes(dataType)) {
+		return res.status(400).json({
+			msg: '올바른 데이터 유형을 입력해주세요.',
+		})
+	}
+
+	if (dataType === 'number') {
+		if (numberUnit === undefined) {
+			return res.status(400).json({
 				msg: '데이터 유형이 숫자인 경우, 단위를 필수로 입력해야 합니다.',
 			})
-        }
-    }
+		}
+	}
 
 	try {
 		await CustomField.create({
@@ -32,7 +44,7 @@ router.post('/custom', async (req, res) => {
 // 사용자 정의 필드 불러오기
 router.get('/custom', async (req, res) => {
 	const { store, category } = req.query
-    let fields
+	let fields
 	try {
 		fields = await CustomField.find({ store, category })
 	} catch (error) {
